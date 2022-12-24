@@ -8,6 +8,8 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
+    //private SessionEntities _sessionEntities;
+
     public HomeController(ILogger<HomeController> logger)
     {
         _logger = logger;
@@ -15,7 +17,23 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        //HttpContext.Session.SetString("Selection", "Bob");
         return View();
+    }
+    [HttpPost]
+    public IActionResult Index([FromBody] IndexPostDTO indexPostDto)
+    {
+        HttpContext.Session.SetString("Selection", indexPostDto.Selection);
+        // _sessionEntities.StepTwoViewModel = new StepTwoViewModel { Selection = selection };
+        return RedirectToAction("StepTwo");
+    }
+
+    public IActionResult StepTwo()
+    {
+        return View(new StepTwoViewModel
+        {
+            Selection = HttpContext.Session.GetString("Selection")
+        });
     }
 
     public IActionResult Privacy()
